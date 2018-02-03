@@ -1,0 +1,6 @@
+*.swp
+vendor
+.vagrant
+merkleeyes.db
+build
+docs/guide/*.sh

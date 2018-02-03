@@ -1,0 +1,51 @@
+package: github.com/arbiro/freezuc
+import:
+- package: github.com/cosmos/cosmos-sdk
+  version: ^0.8.1
+  subpackages:
+  - client
+  - client/commands
+  - client/commands/auto
+  - client/commands/commits
+  - client/commands/keys
+  - client/commands/proxy
+  - client/commands/query
+  - client/commands/rpc
+  - client/commands/search
+  - client/commands/txs
+  - client/rest
+  - modules/auth
+  - modules/auth/commands
+  - modules/base
+  - modules/base/commands
+  - modules/coin
+  - modules/coin/commands
+  - modules/coin/rest
+  - modules/eyes
+  - modules/fee
+  - modules/fee/commands
+  - modules/ibc
+  - modules/ibc/commands
+  - modules/nonce
+  - modules/nonce/commands
+  - modules/nonce/rest
+  - modules/roles
+  - modules/roles/commands
+  - modules/roles/rest
+  - server/commands
+  - stack
+- package: github.com/gorilla/mux
+  version: ^1.6.1
+- package: github.com/spf13/cobra
+  version: ^0.0.1
+- package: github.com/spf13/viper
+  version: ^1.0.0
+- package: github.com/tendermint/tendermint
+  version: ^0.15.0
+  subpackages:
+  - rpc/lib/server
+- package: github.com/tendermint/tmlibs
+  version: ^0.6.0
+  subpackages:
+  - cli
+  - log
