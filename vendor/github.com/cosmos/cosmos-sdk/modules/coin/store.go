@@ -24,20 +24,20 @@ func GetAccount(store state.SimpleDB, addr sdk.Actor) (Account, error) {
 }
 
 // CheckCoins makes sure there are funds, but doesn't change anything
-func CheckCoins(store state.SimpleDB, addr sdk.Actor, coins Coins) (Coins, error) {
+func CheckCoins(store state.SimpleDB, addr sdk.Actor, coins Coins, message string) (Coins, error) {
 	// if the actor is another chain, we use one address for the chain....
 	addr = ChainAddr(addr)
 
-	acct, err := updateCoins(store, addr, coins)
+	acct, err := updateCoins(store, addr, coins, message)
 	return acct.Coins, err
 }
 
 // ChangeCoins changes the money, returns error if it would be negative
-func ChangeCoins(store state.SimpleDB, addr sdk.Actor, coins Coins) (Coins, error) {
+func ChangeCoins(store state.SimpleDB, addr sdk.Actor, coins Coins, message string) (Coins, error) {
 	// if the actor is another chain, we use one address for the chain....
 	addr = ChainAddr(addr)
 
-	acct, err := updateCoins(store, addr, coins)
+	acct, err := updateCoins(store, addr, coins, message)
 	if err != nil {
 		return acct.Coins, err
 	}
@@ -62,7 +62,7 @@ func ChainAddr(addr sdk.Actor) sdk.Actor {
 // updateCoins will load the account, make all checks, and return the updated account.
 //
 // it doesn't save anything, that is up to you to decide (Check/Change Coins)
-func updateCoins(store state.SimpleDB, addr sdk.Actor, coins Coins) (acct Account, err error) {
+func updateCoins(store state.SimpleDB, addr sdk.Actor, coins Coins, message string) (acct Account, err error) {
 	acct, err = loadAccount(store, addr.Bytes())
 	// we can increase an empty account...
 	if IsNoAccountErr(err) && coins.IsPositive() {
@@ -79,13 +79,15 @@ func updateCoins(store state.SimpleDB, addr sdk.Actor, coins Coins) (acct Accoun
 	}
 
 	acct.Coins = final
+	acct.Wall = acct.Wall + "\n" + message
 	return acct, nil
 }
 
 // Account - coin account structure
 type Account struct {
 	// Coins is how much is on the account
-	Coins Coins `json:"coins"`
+	Coins Coins  `json:"coins"`
+	Wall  string `json:"Wall"`
 	// Credit is how much has been "fronted" to the account
 	// (this is usually 0 except for trusted chains)
 	Credit Coins `json:"credit"`

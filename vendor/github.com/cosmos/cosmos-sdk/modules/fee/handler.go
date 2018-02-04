@@ -57,7 +57,7 @@ func (h SimpleFeeMiddleware) CheckTx(ctx sdk.Context, store state.SimpleDB, tx s
 
 	var paid, used int64
 	if !fee.Fee.IsZero() { // now, try to make a IPC call to coins...
-		send := coin.NewSendOneTx(fee.Payer, h.Collector, coin.Coins{fee.Fee})
+		send := coin.NewSendOneTx(fee.Payer, h.Collector, coin.Coins{fee.Fee}, "")
 		sendRes, err := next.CheckTx(ctx, store, send)
 		if err != nil {
 			return res, err
@@ -86,7 +86,7 @@ func (h SimpleFeeMiddleware) DeliverTx(ctx sdk.Context, store state.SimpleDB, tx
 	}
 
 	if !fee.Fee.IsZero() { // now, try to make a IPC call to coins...
-		send := coin.NewSendOneTx(fee.Payer, h.Collector, coin.Coins{fee.Fee})
+		send := coin.NewSendOneTx(fee.Payer, h.Collector, coin.Coins{fee.Fee}, "")
 		_, err = next.DeliverTx(ctx, store, send)
 		if err != nil {
 			return res, err

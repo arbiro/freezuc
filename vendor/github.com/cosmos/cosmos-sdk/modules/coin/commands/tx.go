@@ -26,9 +26,10 @@ var CreditTxCmd = &cobra.Command{
 
 //nolint
 const (
-	FlagTo     = "to"
-	FlagAmount = "amount"
-	FlagFrom   = "from"
+	FlagTo      = "to"
+	FlagAmount  = "amount"
+	FlagFrom    = "from"
+	FlagMessage = "message"
 )
 
 func init() {
@@ -36,6 +37,7 @@ func init() {
 	flags.String(FlagTo, "", "Destination address for the bits")
 	flags.String(FlagAmount, "", "Coins to send in the format <amt><coin>,<amt><coin>...")
 	flags.String(FlagFrom, "", "Address sending coins, if not first signer")
+	flags.String(FlagMessage, "", "Message for wall")
 
 	fs2 := CreditTxCmd.Flags()
 	fs2.String(FlagTo, "", "Destination address for the bits")
@@ -62,13 +64,18 @@ func readSendTxFlags() (tx sdk.Tx, err error) {
 		return tx, err
 	}
 
+	message := viper.GetString(FlagMessage)
+	//if err != nil {
+	//	return tx, err
+	//}
+
 	amountCoins, err := coin.ParseCoins(viper.GetString(FlagAmount))
 	if err != nil {
 		return tx, err
 	}
 
 	// craft the inputs and outputs
-	tx = coin.NewSendOneTx(fromAddr, toAddr, amountCoins)
+	tx = coin.NewSendOneTx(fromAddr, toAddr, amountCoins, message)
 	return
 }
 

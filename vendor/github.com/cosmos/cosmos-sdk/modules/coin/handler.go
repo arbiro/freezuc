@@ -107,7 +107,7 @@ func (h Handler) sendTx(ctx sdk.Context, store state.SimpleDB,
 	// deduct from all input accounts
 	senders := sdk.Actors{}
 	for _, in := range send.Inputs {
-		_, err = ChangeCoins(store, in.Address, in.Coins.Negative())
+		_, err = ChangeCoins(store, in.Address, in.Coins.Negative(), in.Message)
 		if err != nil {
 			return res, err
 		}
@@ -122,7 +122,7 @@ func (h Handler) sendTx(ctx sdk.Context, store state.SimpleDB,
 			out.Address.ChainID = ""
 		}
 
-		_, err = ChangeCoins(store, out.Address, out.Coins)
+		_, err = ChangeCoins(store, out.Address, out.Coins, out.Message)
 		if err != nil {
 			return res, err
 		}
@@ -219,7 +219,7 @@ func (Handler) checkSendTx(ctx sdk.Context, store state.SimpleDB, send SendTx) e
 	}
 	// now make sure there is money
 	for _, in := range send.Inputs {
-		_, err := CheckCoins(store, in.Address, in.Coins.Negative())
+		_, err := CheckCoins(store, in.Address, in.Coins.Negative(), in.Message)
 		if err != nil {
 			return err
 		}

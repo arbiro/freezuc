@@ -32,9 +32,10 @@ type SendInput struct {
 	Multi    bool       `json:"multi,omitempty"`
 	Sequence uint32     `json:"sequence"`
 
-	To     *sdk.Actor `json:"to"`
-	From   *sdk.Actor `json:"from"`
-	Amount coin.Coins `json:"amount"`
+	To      *sdk.Actor `json:"to"`
+	From    *sdk.Actor `json:"from"`
+	Amount  coin.Coins `json:"amount"`
+	Message string     `json:"message"`
 }
 
 // doQueryAccount is the HTTP handlerfunc to query an account
@@ -77,6 +78,7 @@ func doQueryAccount(w http.ResponseWriter, r *http.Request) {
 		common.WriteError(w, err)
 	}
 }
+
 
 // doQueryAccount is the HTTP handlerfunc to search for
 // all SendTx transactions with this account as sender
@@ -124,7 +126,7 @@ func doSearchSent(w http.ResponseWriter, r *http.Request) {
 }
 
 func PrepareSendTx(si *SendInput) sdk.Tx {
-	tx := coin.NewSendOneTx(*si.From, *si.To, si.Amount)
+	tx := coin.NewSendOneTx(*si.From, *si.To, si.Amount, si.Message)
 	// fees are optional
 	if si.Fees != nil && !si.Fees.IsZero() {
 		tx = fee.NewFee(tx, *si.Fees, *si.From)

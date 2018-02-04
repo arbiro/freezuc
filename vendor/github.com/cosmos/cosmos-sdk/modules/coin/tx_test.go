@@ -89,6 +89,7 @@ func TestTxValidateTx(t *testing.T) {
 	otherCoins := Coins{{"btc", 15}}
 	bothCoins := someCoins.Plus(otherCoins)
 	minusCoins := Coins{{"eth", -34}}
+	someText := "Salut!"
 
 	// cases: all valid (one), all valid (multi)
 	// no input, no outputs, invalid inputs, invalid outputs
@@ -99,54 +100,54 @@ func TestTxValidateTx(t *testing.T) {
 	}{
 		// 0-2. valid cases
 		{true, NewSendTx(
-			[]TxInput{NewTxInput(addr1, someCoins)},
-			[]TxOutput{NewTxOutput(addr2, someCoins)},
+			[]TxInput{NewTxInput(addr1, someCoins, someText)},
+			[]TxOutput{NewTxOutput(addr2, someCoins, someText)},
 		)},
 		{true, NewSendTx(
-			[]TxInput{NewTxInput(addr1, someCoins), NewTxInput(addr2, otherCoins)},
-			[]TxOutput{NewTxOutput(addr3, bothCoins)},
+			[]TxInput{NewTxInput(addr1, someCoin, someText), NewTxInput(addr2, otherCoins, someText)},
+			[]TxOutput{NewTxOutput(addr3, bothCoins, someText)},
 		)},
 		{true, NewSendTx(
-			[]TxInput{NewTxInput(addr1, bothCoins)},
-			[]TxOutput{NewTxOutput(addr2, someCoins), NewTxOutput(addr3, otherCoins)},
+			[]TxInput{NewTxInput(addr1, bothCoins, someText)},
+			[]TxOutput{NewTxOutput(addr2, someCoins, someText), NewTxOutput(addr3, otherCoins, someText)},
 		)},
 
 		// 3-4. missing cases
 		{false, NewSendTx(
 			nil,
-			[]TxOutput{NewTxOutput(addr2, someCoins)},
+			[]TxOutput{NewTxOutput(addr2, someCoins, someText)},
 		)},
 		{false, NewSendTx(
-			[]TxInput{NewTxInput(addr1, someCoins)},
+			[]TxInput{NewTxInput(addr1, someCoins, someText)},
 			nil,
 		)},
 
 		// 5-7. invalid inputs
 		{false, NewSendTx(
-			[]TxInput{NewTxInput(noAddr, someCoins)},
-			[]TxOutput{NewTxOutput(addr2, someCoins)},
+			[]TxInput{NewTxInput(noAddr, someCoins, someText)},
+			[]TxOutput{NewTxOutput(addr2, someCoins, someText)},
 		)},
 		{false, NewSendTx(
-			[]TxInput{NewTxInput(addr1, noCoins)},
-			[]TxOutput{NewTxOutput(addr2, noCoins)},
+			[]TxInput{NewTxInput(addr1, noCoins, someText)},
+			[]TxOutput{NewTxOutput(addr2, noCoins, someText)},
 		)},
 		{false, NewSendTx(
-			[]TxInput{NewTxInput(addr1, minusCoins)},
-			[]TxOutput{NewTxOutput(addr2, minusCoins)},
+			[]TxInput{NewTxInput(addr1, minusCoins, someText)},
+			[]TxOutput{NewTxOutput(addr2, minusCoins, someText)},
 		)},
 
 		// 8-10. totals don't match
 		{false, NewSendTx(
-			[]TxInput{NewTxInput(addr1, someCoins)},
-			[]TxOutput{NewTxOutput(addr2, moreCoins)},
+			[]TxInput{NewTxInput(addr1, someCoins, someText)},
+			[]TxOutput{NewTxOutput(addr2, moreCoins, someText)},
 		)},
 		{false, NewSendTx(
-			[]TxInput{NewTxInput(addr1, someCoins), NewTxInput(addr2, minusCoins)},
-			[]TxOutput{NewTxOutput(addr3, someCoins)},
+			[]TxInput{NewTxInput(addr1, someCoins, someText), NewTxInput(addr2, minusCoins, someText)},
+			[]TxOutput{NewTxOutput(addr3, someCoins, someText)},
 		)},
 		{false, NewSendTx(
-			[]TxInput{NewTxInput(addr1, someCoins), NewTxInput(addr2, moreCoins)},
-			[]TxOutput{NewTxOutput(addr3, bothCoins)},
+			[]TxInput{NewTxInput(addr1, someCoins, someText), NewTxInput(addr2, moreCoins, someText)},
+			[]TxOutput{NewTxOutput(addr3, bothCoins, someText)},
 		)},
 	}
 
@@ -169,8 +170,8 @@ func TestTxSerializeTx(t *testing.T) {
 	someCoins := Coins{{"atom", 123}}
 
 	send := NewSendTx(
-		[]TxInput{NewTxInput(addr1, someCoins)},
-		[]TxOutput{NewTxOutput(addr2, someCoins)},
+		[]TxInput{NewTxInput(addr1, someCoins, someText)},
+		[]TxOutput{NewTxOutput(addr2, someCoins, someText)},
 	)
 
 	js, err := data.ToJSON(send)
