@@ -11,15 +11,15 @@ type coinTx struct {
 }
 
 type coinInput struct {
-	Sender  string `json:"sender"`
-	Coins   Coins  `json:"coins"`
-	Message string `json:"Message"`
+	Sender string `json:"sender"`
+	Coins  Coins  `json:"coins"`
+	Post   Post   `json:"Post"`
 }
 
 type coinOutput struct {
 	Receiver string `json:"receiver"`
 	Coins    Coins  `json:"coins"`
-	Message  string `json:"Message"`
+	Post     Post   `json:"Post"`
 }
 
 // ExtractCoinTx makes nice json from raw tx bytes
@@ -48,9 +48,9 @@ func transformInputs(input []TxInput) []coinInput {
 	out := make([]coinInput, 0, len(input))
 	for _, in := range input {
 		out = append(out, coinInput{
-			Sender:  in.Address.String(),
-			Coins:   in.Coins,
-			Message: in.Message,
+			Sender: in.Address.String(),
+			Coins:  in.Coins,
+			Post:   in.Post,
 		})
 	}
 	return out
@@ -62,7 +62,7 @@ func transformOutputs(output []TxOutput) []coinOutput {
 		out = append(out, coinOutput{
 			Receiver: val.Address.String(),
 			Coins:    val.Coins,
-			Message:  val.Message,
+			Post:     val.Post,
 		})
 	}
 	return out

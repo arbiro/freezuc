@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	wire "github.com/tendermint/go-wire"
+	"github.com/tendermint/go-wire/data"
 
 	sdk "github.com/cosmos/cosmos-sdk"
 	"github.com/cosmos/cosmos-sdk/errors"
@@ -24,20 +25,20 @@ func GetAccount(store state.SimpleDB, addr sdk.Actor) (Account, error) {
 }
 
 // CheckCoins makes sure there are funds, but doesn't change anything
-func CheckCoins(store state.SimpleDB, addr sdk.Actor, coins Coins, message string) (Coins, error) {
+func CheckCoins(store state.SimpleDB, addr sdk.Actor, coins Coins, post Post) (Coins, error) {
 	// if the actor is another chain, we use one address for the chain....
 	addr = ChainAddr(addr)
 
-	acct, err := updateCoins(store, addr, coins, message)
+	acct, err := updateCoins(store, addr, coins, post)
 	return acct.Coins, err
 }
 
 // ChangeCoins changes the money, returns error if it would be negative
-func ChangeCoins(store state.SimpleDB, addr sdk.Actor, coins Coins, message string) (Coins, error) {
+func ChangeCoins(store state.SimpleDB, addr sdk.Actor, coins Coins, post Post) (Coins, error) {
 	// if the actor is another chain, we use one address for the chain....
 	addr = ChainAddr(addr)
 
-	acct, err := updateCoins(store, addr, coins, message)
+	acct, err := updateCoins(store, addr, coins, post)
 	if err != nil {
 		return acct.Coins, err
 	}
@@ -62,7 +63,7 @@ func ChainAddr(addr sdk.Actor) sdk.Actor {
 // updateCoins will load the account, make all checks, and return the updated account.
 //
 // it doesn't save anything, that is up to you to decide (Check/Change Coins)
-func updateCoins(store state.SimpleDB, addr sdk.Actor, coins Coins, message string) (acct Account, err error) {
+func updateCoins(store state.SimpleDB, addr sdk.Actor, coins Coins, post Post) (acct Account, err error) {
 	acct, err = loadAccount(store, addr.Bytes())
 	// we can increase an empty account...
 	if IsNoAccountErr(err) && coins.IsPositive() {
@@ -79,7 +80,7 @@ func updateCoins(store state.SimpleDB, addr sdk.Actor, coins Coins, message stri
 	}
 
 	acct.Coins = final
-	acct.Wall = acct.Wall + "\n" + message
+	acct.Wall = append(acct.Wall, post)
 	return acct, nil
 }
 
@@ -87,10 +88,15 @@ func updateCoins(store state.SimpleDB, addr sdk.Actor, coins Coins, message stri
 type Account struct {
 	// Coins is how much is on the account
 	Coins Coins  `json:"coins"`
-	Wall  string `json:"Wall"`
+	Wall  []Post `json:"Wall"`
 	// Credit is how much has been "fronted" to the account
 	// (this is usually 0 except for trusted chains)
 	Credit Coins `json:"credit"`
+}
+
+type Post struct {
+	Text      string     `json:"Text"`
+	AuthorKey data.Bytes `json:"AuthorKey"`
 }
 
 func loadAccount(store state.SimpleDB, key []byte) (acct Account, err error) {

@@ -26,7 +26,7 @@ const (
 type TxInput struct {
 	Address sdk.Actor `json:"address"`
 	Coins   Coins     `json:"coins"`
-	Message string    `json:"message"`
+	Post    Post      `json:"post"`
 }
 
 // ValidateBasic - validate transaction input
@@ -48,15 +48,15 @@ func (txIn TxInput) ValidateBasic() error {
 }
 
 func (txIn TxInput) String() string {
-	return fmt.Sprintf("TxInput{%v,%v,%s}", txIn.Address, txIn.Coins, txIn.Message)
+	return fmt.Sprintf("TxInput{%v,%v,%s}", txIn.Address, txIn.Coins, txIn.Post)
 }
 
 // NewTxInput - create a transaction input, used with SendTx
-func NewTxInput(addr sdk.Actor, coins Coins, message string) TxInput {
+func NewTxInput(addr sdk.Actor, coins Coins, post Post) TxInput {
 	input := TxInput{
 		Address: addr,
 		Coins:   coins,
-		Message: message,
+		Post:    post,
 	}
 	return input
 }
@@ -67,7 +67,7 @@ func NewTxInput(addr sdk.Actor, coins Coins, message string) TxInput {
 type TxOutput struct {
 	Address sdk.Actor `json:"address"`
 	Coins   Coins     `json:"coins"`
-	Message string    `json:"message"`
+	Post    Post      `json:"Post"`
 }
 
 // ValidateBasic - validate transaction output
@@ -89,15 +89,15 @@ func (txOut TxOutput) ValidateBasic() error {
 }
 
 func (txOut TxOutput) String() string {
-	return fmt.Sprintf("TxOutput{%X,%v,%s}", txOut.Address, txOut.Coins, txOut.Message)
+	return fmt.Sprintf("TxOutput{%X,%v,%s}", txOut.Address, txOut.Coins, txOut.Post)
 }
 
 // NewTxOutput - create a transaction output, used with SendTx
-func NewTxOutput(addr sdk.Actor, coins Coins, message string) TxOutput {
+func NewTxOutput(addr sdk.Actor, coins Coins, post Post) TxOutput {
 	output := TxOutput{
 		Address: addr,
 		Coins:   coins,
-		Message: message,
+		Post:    post,
 	}
 	return output
 }
@@ -120,9 +120,9 @@ func NewSendTx(in []TxInput, out []TxOutput) sdk.Tx {
 
 // NewSendOneTx is a helper for the standard (?) case where there is exactly
 // one sender and one recipient
-func NewSendOneTx(sender, recipient sdk.Actor, amount Coins, message string) sdk.Tx {
-	in := []TxInput{{Address: sender, Coins: amount, Message: message}}
-	out := []TxOutput{{Address: recipient, Coins: amount, Message: message}}
+func NewSendOneTx(sender, recipient sdk.Actor, amount Coins, post Post) sdk.Tx {
+	in := []TxInput{{Address: sender, Coins: amount, Post: post}}
+	out := []TxOutput{{Address: recipient, Coins: amount, Post: post}}
 	return SendTx{Inputs: in, Outputs: out}.Wrap()
 }
 

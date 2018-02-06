@@ -73,9 +73,11 @@ func readSendTxFlags() (tx sdk.Tx, err error) {
 	if err != nil {
 		return tx, err
 	}
-
+	var post coin.Post
+	post.AuthorKey = fromAddr.Address
+	post.Text = message
 	// craft the inputs and outputs
-	tx = coin.NewSendOneTx(fromAddr, toAddr, amountCoins, message)
+	tx = coin.NewSendOneTx(fromAddr, toAddr, amountCoins, post)
 	return
 }
 

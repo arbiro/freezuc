@@ -20,7 +20,7 @@ var AccountQueryCmd = &cobra.Command{
 }
 
 func accountQueryCmd(cmd *cobra.Command, args []string) error {
-	addr, err := commands.GetOneArg(args, "address")
+	addr, err := commands.GetOneArg(args, "address")	
 	if err != nil {
 		return err
 	}

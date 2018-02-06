@@ -79,7 +79,6 @@ func doQueryAccount(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
 // doQueryAccount is the HTTP handlerfunc to search for
 // all SendTx transactions with this account as sender
 // or receiver
@@ -126,7 +125,7 @@ func doSearchSent(w http.ResponseWriter, r *http.Request) {
 }
 
 func PrepareSendTx(si *SendInput) sdk.Tx {
-	tx := coin.NewSendOneTx(*si.From, *si.To, si.Amount, si.Message)
+	tx := coin.NewSendOneTx(*si.From, *si.To, si.Amount, coin.Post{si.Message, si.From.Address})
 	// fees are optional
 	if si.Fees != nil && !si.Fees.IsZero() {
 		tx = fee.NewFee(tx, *si.Fees, *si.From)
