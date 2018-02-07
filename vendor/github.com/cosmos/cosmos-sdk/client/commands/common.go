@@ -79,6 +79,12 @@ func GetCertifier() (*lite.Inquiring, error) {
 	trust := GetTrustedProvider()
 	source := GetSourceProvider()
 	chainID := GetChainID()
+	fmt.Print("\n GETGETGET")
+	fmt.Print(trust)
+	fmt.Print("\n")
+	fmt.Print(source)
+	fmt.Print("\n")
+	fmt.Print(chainID)
 	return client.GetCertifier(chainID, trust, source)
 }
 
@@ -106,6 +112,8 @@ func ParseActor(input string) (res sdk.Actor, err error) {
 	if err != nil {
 		return res, errors.Errorf("Address is invalid hex: %v\n", err)
 	}
+
+	fmt.Printf("chain:%s || app:%s", chain, app)
 	res = sdk.Actor{
 		ChainID: chain,
 		App:     app,

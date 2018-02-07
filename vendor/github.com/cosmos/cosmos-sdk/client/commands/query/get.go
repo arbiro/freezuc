@@ -70,7 +70,7 @@ func Get(key []byte, height int64, prove bool) (data.Bytes, int64, error) {
 // proof for the key-value pair if it exists, and all checks pass.
 func GetWithProof(key []byte, height int64) (data.Bytes, int64, iavl.KeyProof, error) {
 	node := commands.GetNode()
-	cert, err := commands.GetCertifier()
+	cert, err := commands.GetCertifier() //here brolblem, plz fix
 	if err != nil {
 		return nil, 0, nil, err
 	}

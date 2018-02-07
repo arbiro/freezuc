@@ -2,6 +2,7 @@ package client
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/tendermint/tendermint/lite"
 	certclient "github.com/tendermint/tendermint/lite/client"
@@ -35,10 +36,12 @@ func GetLocalProvider(dir string) lite.Provider {
 // and a local source of trusted data with at least one seed
 func GetCertifier(chainID string, trust lite.Provider,
 	source lite.Provider) (*lite.Inquiring, error) {
-
+	fmt.Print("Liteprovider:")
+	fmt.Print(trust)
 	// this gets the most recent verified commit
-	fc, err := trust.LatestCommit()
+	fc, err := trust.LatestCommit() //PROBLEMHERE
 	if certerr.IsCommitNotFoundErr(err) {
+		fmt.Print("FAIL FFMMMM\n\n")
 		return nil, errors.New("Please run init first to establish a root of trust")
 	}
 	if err != nil {

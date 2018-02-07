@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"fmt"
+
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -20,7 +22,8 @@ var AccountQueryCmd = &cobra.Command{
 }
 
 func accountQueryCmd(cmd *cobra.Command, args []string) error {
-	addr, err := commands.GetOneArg(args, "address")	
+	addr, err := commands.GetOneArg(args, "address")
+	fmt.Printf("Adresss at this point is %s", addr)
 	if err != nil {
 		return err
 	}
